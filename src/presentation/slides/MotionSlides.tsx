@@ -190,13 +190,13 @@ export function AccelerationSlide({ step }: SlideProps) {
           </div>
           <div className="card px-8 py-5">
             <div className="eyebrow">Nyutonning II qonuni</div>
-            <Tex math="F_{\text{net}} = ma" className="mt-1 block text-[52px]" />
+            <Tex math="F_{\text{nat}} = ma" className="mt-1 block text-[52px]" />
           </div>
         </div>
 
         <div className="flex flex-col gap-7">
           <Reveal show variant="up" delay={0.3} className="card px-10 py-7">
-            <Tex math={`F_{\\text{net}} = ${T.Fx} - ${T.Fishq}`} className="text-[64px]" />
+            <Tex math={`F_{\\text{nat}} = ${T.Fx} - ${T.Fishq}`} className="text-[64px]" />
           </Reveal>
 
           {/* Bir xil joyda: avval oddiy, keyin m qisqartirilgan ko‘rinish */}

@@ -66,8 +66,8 @@ const SOLUTION = [
   `${T.Fx} = mg\\sin\\alpha \\approx 24.53\\,\\text{N}`,
   `${T.N} = mg\\cos\\alpha \\approx 42.48\\,\\text{N}`,
   `${T.Fishq} = \\mu ${T.N} \\approx 8.50\\,\\text{N}`,
-  `F_{\\text{net}} = ${T.Fx} - ${T.Fishq} \\approx 16.03\\,\\text{N}`,
-  `a = \\dfrac{F_{\\text{net}}}{m} \\approx 3.21\\,\\text{m/s}^2`,
+  `F_{\\text{nat}} = ${T.Fx} - ${T.Fishq} \\approx 16.03\\,\\text{N}`,
+  `a = \\dfrac{F_{\\text{nat}}}{m} \\approx 3.21\\,\\text{m/s}^2`,
 ]
 
 export function ExampleSlide({ step }: SlideProps) {
@@ -237,7 +237,13 @@ export function SummarySlide({ step }: SlideProps) {
         ))}
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6">
+      {/* Yakuniy qadamda formulalar biroz xiralashadi (joyi va o‘lchami o‘zgarmaydi) */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6"
+        initial={false}
+        animate={step >= 6 ? { opacity: 0.32, filter: 'blur(2px)' } : { opacity: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.7, ease: EASE }}
+      >
         {FINAL.map((f, i) => (
           <Reveal key={f} show={step >= 5} variant="zoom" delay={0.3 + i * 0.18} className={`card px-14 py-5 ${i === 2 ? 'card-glow' : ''}`}>
             <Tex math={f} className={`text-[72px] ${i === 2 ? 'text-glow' : ''}`} />
@@ -246,9 +252,24 @@ export function SummarySlide({ step }: SlideProps) {
         <Reveal show={step >= 5} variant="fade" delay={0.9} className="flex items-baseline gap-4 text-[28px] text-fog">
           Sirpanish sharti: <Tex math="\tan\alpha > \mu" className="text-[40px] text-snow" />
         </Reveal>
-        <Reveal show={step >= 6} variant="blur" className="mt-6 font-display text-[46px] font-semibold text-snow/90 italic">
-          «Fizikani ko‘rish — uni tushunishning eng yaxshi yo‘li.»
-        </Reveal>
+      </motion.div>
+
+      {/* Yakuniy xulosa: yumshoq paydo bo‘lish va juda yengil yaqinlashish */}
+      <div className="pointer-events-none absolute inset-0 grid place-items-center">
+        <motion.div
+          initial={false}
+          animate={step >= 6 ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : { opacity: 0, scale: 0.96, filter: 'blur(6px)' }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="card px-20 py-14 text-center"
+          aria-hidden={step < 6}
+        >
+          <p className="font-display text-[68px] leading-[1.12] font-bold tracking-[-0.02em] text-snow">
+            Fizikani ko‘rish — uni tushunishning
+            <br />
+            <span className="text-glow">eng yaxshi yo‘li.</span>
+          </p>
+          <p className="mt-7 text-[32px] tracking-wide text-fog">Kuzating. Tahlil qiling. Tajribada tekshiring.</p>
+        </motion.div>
       </div>
     </SlideShell>
   )
