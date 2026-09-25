@@ -2,6 +2,7 @@ import { AccelerationSlide, AngleCompareSlide, SlideConditionSlide } from './Mot
 import { DecompositionSlide, ForcesSlide, FrictionSlide, NormalSlide } from './ForceSlides'
 import { DefinitionSlide, ProblemSlide, RecallSlide, TitleSlide } from './IntroSlides'
 import { ExampleSlide, LabSlide, QuizSlide, SummarySlide } from './PracticeSlides'
+import { SimulatorSlide } from './SimulatorSlide'
 import type { SlideDef } from './types'
 
 /** Slaydlar tartibi darslik mantiqiga mos. `steps` — Probel bilan ochiladigan qadamlar soni */
@@ -21,4 +22,5 @@ export const SLIDES: SlideDef[] = [
   { id: 'example', title: 'Namunaviy masala', steps: 6, Component: ExampleSlide },
   { id: 'quiz', title: 'Tezkor tekshiruv', steps: 11, Component: QuizSlide },
   { id: 'summary', title: 'Xulosa', steps: 6, Component: SummarySlide },
+  { id: 'simulator', title: 'Interaktiv simulyator', steps: 0, Component: SimulatorSlide },
 ]
