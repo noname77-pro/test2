@@ -3,8 +3,8 @@ import { Tex } from './ui/Tex'
 
 const FORMULAS = [
   { tex: 'P = mg', caption: 'Og‘irlik kuchi', note: 'vertikal pastga yo‘nalgan' },
-  { tex: 'F_{\\parallel} = mg\\sin\\alpha', caption: 'Parallel tashkil etuvchi', note: 'jismni qiyalik bo‘ylab tortadi' },
-  { tex: 'F_{\\perp} = mg\\cos\\alpha', caption: 'Perpendikulyar tashkil etuvchi', note: 'jismni tayanchga bosadi' },
+  { tex: 'F_x = mg\\sin\\alpha', caption: 'Qiyalik bo‘ylab tashkil etuvchi', note: 'jismni qiyalik bo‘ylab pastga tortadi' },
+  { tex: 'F_y = mg\\cos\\alpha', caption: 'Qiyalikka tik tashkil etuvchi', note: 'jismni tayanchga bosadi' },
   { tex: 'N = mg\\cos\\alpha', caption: 'Normal reaksiya kuchi', note: 'sirtga tik, tashqariga' },
   { tex: 'F_{\\text{ishq}} = \\mu N = \\mu mg\\cos\\alpha', caption: 'Ishqalanish kuchi', note: 'harakatga qarshi yo‘nalgan' },
   { tex: 'F_{\\text{net}} = mg\\sin\\alpha - \\mu mg\\cos\\alpha', caption: 'Teng ta’sir etuvchi kuch', note: 'pastga harakatda' },

@@ -122,9 +122,8 @@ export function SimulationCanvas({
   })
 
   const speedLines = v > 0.15 ? Math.min(1, v / 8) : 0
-  const valueDigits = 1
-  // Tor ekranlarda son qiymatlar faqat «Fizik kattaliklar» panelida ko‘rsatiladi
-  const showValues = width === 0 || width >= 560
+  // Diagrammada faqat belgilar; son qiymatlar «Fizik kattaliklar» panelida
+  const subSize = 17 * ui
 
   return (
     <svg
@@ -301,7 +300,7 @@ export function SimulationCanvas({
         textAnchor={displayAngle > 0.4 ? 'end' : 'middle'}
         dominantBaseline="central"
         fill="#E9FD87"
-        fontSize={20 * ui}
+        fontSize={24 * ui}
         fontWeight={700}
         stroke="#010101"
         strokeWidth={4}
@@ -424,12 +423,12 @@ export function SimulationCanvas({
             scale={ui}
             side="left"
             labelMinDist={clearNormal}
+            size={1.2}
             label={
               <>
-                mg cos α
+                F<tspan baselineShift="sub" fontSize={subSize * 1.2}>y</tspan>
               </>
             }
-            value={showValues ? `${fmt(f.perpendicular, valueDigits)} N` : undefined}
           />
           <ForceVector
             origin={center}
@@ -438,8 +437,12 @@ export function SimulationCanvas({
             dashed
             scale={ui}
             labelMinDist={clearAlong}
-            label="mg sin α"
-            value={showValues ? `${fmt(f.parallel, valueDigits)} N` : undefined}
+            size={1.2}
+            label={
+              <>
+                F<tspan baselineShift="sub" fontSize={subSize * 1.2}>x</tspan>
+              </>
+            }
           />
         </>
       )}
@@ -452,10 +455,9 @@ export function SimulationCanvas({
           labelMinDist={clearAlong}
           label={
             <>
-              F<tspan baselineShift="sub" fontSize={12 * ui}>ishq</tspan>
+              F<tspan baselineShift="sub" fontSize={subSize}>ishq</tspan>
             </>
           }
-          value={showValues ? `${fmt(f.friction, valueDigits)} N` : undefined}
         />
       )}
       {visibility.normal && (
@@ -466,7 +468,6 @@ export function SimulationCanvas({
           scale={ui}
           labelMinDist={clearNormal}
           label="N"
-          value={showValues ? `${fmt(f.normal, valueDigits)} N` : undefined}
         />
       )}
       {visibility.weight && (
@@ -477,7 +478,6 @@ export function SimulationCanvas({
           scale={ui}
           side={visibility.components && displayAngle < 35 ? 'right' : 'auto'}
           label="mg"
-          value={showValues ? `${fmt(f.weight, valueDigits)} N` : undefined}
         />
       )}
 

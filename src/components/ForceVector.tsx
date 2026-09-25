@@ -13,7 +13,8 @@ interface ForceVectorProps {
   vec: Vec
   color: string
   label: ReactNode
-  value?: string
+  /** Yorliq o‘lchami ko‘paytuvchisi (masalan, F_x va F_y uchun kattaroq) */
+  size?: number
   dashed?: boolean
   scale?: number
   /** Yorliqni uchning qaysi tomoniga qo‘yish (yaqin vektorlar ustma-ust tushmasligi uchun) */
@@ -29,7 +30,7 @@ export function ForceVector({
   vec,
   color,
   label,
-  value,
+  size = 1,
   dashed = false,
   scale = 1,
   side = 'auto',
@@ -55,10 +56,8 @@ export function ForceVector({
     `${neck.x - px * halfW},${neck.y - py * halfW}`,
   ].join(' ')
 
-  const fontSize = 17 * scale
-  const valueSize = 12.5 * scale
-  const lineH = fontSize * 1.08
-  const blockH = value ? lineH + valueSize * 1.15 : lineH
+  const fontSize = 24 * scale * size
+  const blockH = fontSize * 1.15
   const gap = 10 * scale
 
   let anchor: 'start' | 'middle' | 'end' = ux > 0.3 ? 'start' : ux < -0.3 ? 'end' : 'middle'
@@ -115,19 +114,6 @@ export function ForceVector({
         <tspan fontSize={fontSize} fontWeight={700}>
           {label}
         </tspan>
-        {value && (
-          <tspan
-            x={lx}
-            dy={lineH}
-            fontSize={valueSize}
-            fontWeight={500}
-            fill="#FBFAFB"
-            fillOpacity={0.78}
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {value}
-          </tspan>
-        )}
       </text>
     </g>
   )

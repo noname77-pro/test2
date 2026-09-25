@@ -24,7 +24,7 @@ interface View {
 }
 
 function describe({ status, forces, v, t, a, hidden }: StatusCardProps): View {
-  const par = `mg sin α = ${fmt(forces.parallel, 1)} N`
+  const par = `F_x = mg sin α = ${fmt(forces.parallel, 1)} N`
   const fr = `μmg cos α = ${fmt(forces.slidingFriction, 1)} N`
 
   if (hidden) {
@@ -133,7 +133,7 @@ export function StatusCard(props: StatusCardProps) {
 
       {!hidden && (
         <div className="mt-5 space-y-2.5">
-          <ForceBar label="mg sin α" hint="pastga tortadi" value={forces.parallel} scale={scale} color="bg-amber" />
+          <ForceBar label="F_x = mg sin α" hint="pastga tortadi" value={forces.parallel} scale={scale} color="bg-amber" />
           <ForceBar
             label="μmg cos α"
             hint="ishqalanish kuchi"

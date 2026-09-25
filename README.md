@@ -94,8 +94,8 @@ vercel --prod   # production deployment
 | Quantity | Formula |
 | --- | --- |
 | Weight | `P = mg` |
-| Parallel component | `F∥ = mg sin α` |
-| Perpendicular component | `F⊥ = mg cos α` |
+| Component along the plane | `F_x = mg sin α` |
+| Component perpendicular to the plane | `F_y = mg cos α` |
 | Normal reaction | `N = mg cos α` |
 | Friction force | `F_ishq = μN = μmg cos α` |
 | Net force (downward motion) | `F_net = mg sin α − μmg cos α` |

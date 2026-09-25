@@ -30,8 +30,8 @@ export function PhysicsPanel({ params, forces, snapshot, moving, hideVerdict = f
 
   const rows: Row[] = [
     { tex: 'P = mg', value: forces.weight, unit: 'N', accent: 'bg-snow' },
-    { tex: 'F_{\\parallel} = mg\\sin\\alpha', value: forces.parallel, unit: 'N', accent: 'bg-amber' },
-    { tex: 'F_{\\perp} = mg\\cos\\alpha', value: forces.perpendicular, unit: 'N', accent: 'bg-periwinkle' },
+    { tex: 'F_x = mg\\sin\\alpha', value: forces.parallel, unit: 'N', accent: 'bg-amber' },
+    { tex: 'F_y = mg\\cos\\alpha', value: forces.perpendicular, unit: 'N', accent: 'bg-periwinkle' },
     { tex: 'N = mg\\cos\\alpha', value: forces.normal, unit: 'N', accent: 'bg-lime' },
     { tex: 'F_{\\text{ishq}} = \\mu N', value: forces.slidingFriction, unit: 'N', accent: 'bg-coral' },
     {

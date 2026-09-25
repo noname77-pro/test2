@@ -56,12 +56,12 @@ export function calculateWeight({ mass, g }: PhysicsParams): number {
   return mass * g
 }
 
-/** F∥ = mg sin α — og‘irlik kuchining qiyalik bo‘ylab tashkil etuvchisi */
+/** F_x = mg sin α — og‘irlik kuchining qiyalik bo‘ylab tashkil etuvchisi */
 export function calculateParallelForce(p: PhysicsParams): number {
   return p.mass * p.g * Math.sin(toRad(p.angleDeg))
 }
 
-/** F⊥ = mg cos α — og‘irlik kuchining qiyalikka tik tashkil etuvchisi */
+/** F_y = mg cos α — og‘irlik kuchining qiyalikka tik tashkil etuvchisi */
 export function calculatePerpendicularForce(p: PhysicsParams): number {
   return p.mass * p.g * Math.cos(toRad(p.angleDeg))
 }
