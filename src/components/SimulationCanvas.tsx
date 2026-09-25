@@ -244,7 +244,7 @@ export function SimulationCanvas({
             paintOrder="stroke"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
-            α<tspan baseline-shift="sub" fontSize={10 * ui}>kr</tspan> = {fmt(f.criticalAngle, 1)}°
+            α<tspan baselineShift="sub" fontSize={10 * ui}>kr</tspan> = {fmt(f.criticalAngle, 1)}°
           </text>
         </g>
       )}
@@ -452,7 +452,7 @@ export function SimulationCanvas({
           labelMinDist={clearAlong}
           label={
             <>
-              F<tspan baseline-shift="sub" fontSize={12 * ui}>ishq</tspan>
+              F<tspan baselineShift="sub" fontSize={12 * ui}>ishq</tspan>
             </>
           }
           value={showValues ? `${fmt(f.friction, valueDigits)} N` : undefined}
