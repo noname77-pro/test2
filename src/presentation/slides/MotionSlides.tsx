@@ -30,9 +30,9 @@ function BigSlider({
   const pct = ((value - min) / (max - min)) * 100
   return (
     <div data-interactive className="card px-7 pt-4 pb-3">
-      <div className="flex items-baseline justify-between gap-4 whitespace-nowrap">
-        <span className="text-[24px] text-fog">{label}</span>
-        <span className="font-mono text-[34px] font-semibold text-glow">
+      <div className="flex items-baseline justify-between gap-3 whitespace-nowrap">
+        <span className="text-[21px] text-fog">{label}</span>
+        <span className="font-mono text-[30px] font-semibold text-glow">
           <Tex math={symbol} className="text-lime" /> = {value.toFixed(digits)}
           {unit}
         </span>
@@ -67,7 +67,17 @@ export function SlideConditionSlide({ step }: SlideProps) {
   const scale = 300 // 1·mg = 300 px
 
   return (
-    <SlideShell number={9} eyebrow="Sirpanish sharti" title="Jism qachon sirpanadi?">
+    <SlideShell
+      number={9}
+      eyebrow="Sirpanish sharti"
+      title="Jism qachon sirpanadi?"
+      keyIdea={
+        <>
+          Jism <Tex math={`${T.Fx} > ${T.Fishq}`} /> bo‘lganda sirpanadi.
+        </>
+      }
+      showKeyIdea={step >= 4}
+    >
       <motion.div
         className="grid h-full grid-cols-[980px_1fr] gap-12"
         animate={step >= 4 ? { opacity: 0.18, scale: 0.97, filter: 'blur(6px)' } : { opacity: 1, scale: 1, filter: 'blur(0px)' }}
@@ -82,6 +92,7 @@ export function SlideConditionSlide({ step }: SlideProps) {
               vectors={{ mg: 'dim', Fx: 'hi', Fishq: 'hi' }}
               sliding={slides}
               showAngle
+              labelSize={60}
               cameraDuration={0.4}
               className="h-full w-full"
             />
@@ -90,7 +101,7 @@ export function SlideConditionSlide({ step }: SlideProps) {
                 slides ? 'border-lime/60 bg-lime/15 text-glow' : 'border-coral/50 bg-coral/10 text-coral'
               }`}
             >
-              {slides ? 'Jism sirpanadi' : 'Jism tinch turibdi'}
+              {slides ? 'Jism sirpanadi' : 'Jism sirpanmaydi'}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-5">
@@ -130,21 +141,23 @@ export function SlideConditionSlide({ step }: SlideProps) {
             <Tex math={`${T.Fx} > ${T.Fishq}`} className="text-[54px]" />
             <span className="text-[28px] text-glow">⇒ jism sirpanadi</span>
           </Reveal>
-          <Reveal show={step >= 2} variant="up" className="card px-8 py-5">
-            <Tex math="mg\sin\alpha > \mu mg\cos\alpha" className="text-[52px]" />
+          <Reveal show={step >= 2} variant="up" className="card flex items-center justify-between px-8 py-5">
+            <Tex math="mg\sin\alpha > \mu mg\cos\alpha" className="text-[46px]" />
+            <span className="w-[120px] shrink-0 text-right text-[21px] leading-tight text-fog">o‘rniga qo‘yamiz</span>
           </Reveal>
           <Reveal show={step >= 3} variant="up" className="card flex items-center justify-between px-8 py-5">
-            <Tex math="\tan\alpha > \mu" className="text-[56px] text-glow" />
-            <span className="w-[270px] shrink-0 text-right text-[22px] leading-snug text-fog">ikkala tomonni mg cos α ga bo‘lamiz</span>
+            <Tex math="\sin\alpha > \mu\cos\alpha" className="text-[54px]" />
+            <span className="w-[120px] shrink-0 text-right text-[21px] leading-tight text-fog">mg ga qisqartiramiz</span>
           </Reveal>
         </div>
       </motion.div>
 
       {/* Yakuniy shart — kuchli yaqinlashish bilan */}
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <Emphasis show={step >= 4} className="card card-glow px-24 py-16 text-center">
-          <div className="font-display text-[54px] font-semibold text-snow/90">Sirpanish sharti:</div>
-          <Tex math="\tan\alpha > \mu" className="mt-4 block text-[150px] text-glow" />
+        <Emphasis show={step >= 4} className="card card-glow px-24 py-14 text-center">
+          <div className="font-display text-[54px] font-semibold text-snow/90">Sirpanish sharti</div>
+          <Tex math="\tan\alpha > \mu" className="mt-3 block text-[140px] text-glow" />
+          <div className="mt-2 font-mono text-[24px] text-fog">sin α &gt; μ cos α tengsizlikni cos α ga bo‘lamiz</div>
         </Emphasis>
       </div>
     </SlideShell>
@@ -156,11 +169,24 @@ const CANCEL = '\\textcolor{#FF8D6B}{\\cancel{m}}'
 
 export function AccelerationSlide({ step }: SlideProps) {
   return (
-    <SlideShell number={10} eyebrow="Nyutonning II qonuni" title="Qiya tekislik bo‘ylab tezlanish">
+    <SlideShell
+      number={10}
+      eyebrow="Nyutonning II qonuni"
+      title="Qiya tekislik bo‘ylab tezlanish"
+      keyIdea="Tezlanish natijaviy kuch bilan aniqlanadi."
+      showKeyIdea={step >= 3}
+    >
       <div className="grid h-full grid-cols-[640px_1fr] items-center gap-14">
         <div className="flex flex-col gap-5">
           <div className="card h-[360px] overflow-hidden">
-            <InclineDiagram angle={30} camera="block" vectors={{ mg: 'dim', Fx: 'hi', Fishq: 'hi' }} className="h-full w-full" />
+            {/* Kadr jism va α burchagini birga qamraydi — α kesilib qolmaydi */}
+            <InclineDiagram
+              angle={30}
+              camera={{ x: 500, y: 345, w: 830, h: 467 }}
+              vectors={{ mg: 'dim', Fx: 'hi', Fishq: 'hi' }}
+              showAngle
+              className="h-full w-full"
+            />
           </div>
           <div className="card px-8 py-5">
             <div className="eyebrow">Nyutonning II qonuni</div>
@@ -273,8 +299,8 @@ export function AngleCompareSlide({ step, goToStep }: SlideProps) {
                 </span>
               )}
               <span className="text-[32px] leading-snug">
-                <b className="text-glow">α = 45°</b> — <Tex math={`${T.Fx} = mg\\sin\\alpha`} /> eng katta,{' '}
-                <Tex math={`${T.Fishq} = \\mu mg\\cos\\alpha`} /> esa eng kichik
+                α ortishi bilan <Tex math={`${T.Fx} = mg\\sin\\alpha`} /> ortadi — <b className="text-glow">α = 45°</b> da jism
+                sirpanishga eng moyil.
               </span>
             </motion.div>
           )}

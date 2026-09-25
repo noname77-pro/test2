@@ -123,7 +123,7 @@ export function LiftScene({ mode, showForce }: LiftSceneProps) {
  * 4-slayd: hayotiy misollar uchun chiziqli belgilar
  * ------------------------------------------------------------------------- */
 
-export type ExampleKind = 'ramp' | 'mountain' | 'loading' | 'slide'
+export type ExampleKind = 'ramp' | 'mountain' | 'loading'
 
 export function ExampleIcon({ kind }: { kind: ExampleKind }) {
   const common = { fill: 'none', stroke: C.glow, strokeWidth: 3.5, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
@@ -150,13 +150,6 @@ export function ExampleIcon({ kind }: { kind: ExampleKind }) {
           <circle cx={56} cy={60} r={6} />
           <circle cx={80} cy={60} r={6} />
           <rect x={18} y={48} width={12} height={10} rx={2} transform="rotate(-23 24 53)" />
-        </g>
-      )}
-      {kind === 'slide' && (
-        <g {...common}>
-          <path d="M16 68 V14 M30 68 V14 M16 26 H30 M16 40 H30 M16 54 H30" strokeOpacity={0.75} />
-          <path d="M30 14 C52 18 56 50 90 64" />
-          <path d="M30 24 C50 28 54 56 84 68" strokeOpacity={0.5} />
         </g>
       )}
     </svg>

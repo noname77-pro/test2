@@ -132,11 +132,14 @@ interface SlideShellProps {
   number: number
   eyebrow: string
   title: string
+  /** «Asosiy fikr» — faqat muhim slaydlarda, xulosa qadamida paydo bo‘ladi */
+  keyIdea?: ReactNode
+  showKeyIdea?: boolean
   children: ReactNode
 }
 
 /** Slayd ramkasi: katta sarlavha va mazmun maydoni */
-export function SlideShell({ number, eyebrow, title, children }: SlideShellProps) {
+export function SlideShell({ number, eyebrow, title, keyIdea, showKeyIdea = false, children }: SlideShellProps) {
   return (
     <div className="absolute inset-0 flex flex-col px-[120px] pt-[78px] pb-[120px]">
       <header>
@@ -149,6 +152,7 @@ export function SlideShell({ number, eyebrow, title, children }: SlideShellProps
           <span className="text-glow">{String(number).padStart(2, '0')}</span>
           <span className="h-px w-12 bg-lime/50" />
           <span className="text-fog">{eyebrow}</span>
+          {keyIdea && <KeyIdea show={showKeyIdea}>{keyIdea}</KeyIdea>}
         </motion.div>
         <motion.h2
           initial={{ opacity: 0, y: 18, filter: 'blur(8px)' }}
@@ -161,6 +165,24 @@ export function SlideShell({ number, eyebrow, title, children }: SlideShellProps
       </header>
       <div className="relative mt-10 min-h-0 flex-1">{children}</div>
     </div>
+  )
+}
+
+/** Sarlavha qatoridagi nozik «Asosiy fikr» belgisi (maket balandligini o‘zgartirmaydi) */
+function KeyIdea({ show, children }: { show: boolean; children: ReactNode }) {
+  return (
+    <motion.span
+      initial={false}
+      animate={show ? { opacity: 1, x: 0, filter: 'blur(0px)' } : { opacity: 0, x: -16, filter: 'blur(6px)' }}
+      transition={{ duration: 0.55, ease: EASE }}
+      className="-my-4 ml-6 inline-flex items-center gap-4 rounded-full border border-lime/35 bg-lime/[0.07] py-2 pr-6 pl-2 font-sans text-[25px] tracking-normal text-snow normal-case"
+      aria-hidden={!show}
+    >
+      <span className="rounded-full bg-lime px-4 py-1 font-mono text-[16px] font-semibold tracking-[0.14em] text-ink uppercase">
+        Asosiy fikr
+      </span>
+      {children}
+    </motion.span>
   )
 }
 

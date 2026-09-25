@@ -56,7 +56,7 @@ export function TitleSlide() {
           transition={{ duration: 0.6, delay: 0.6, ease: EASE }}
           className="mt-8 text-[34px] text-fog"
         >
-          Mexanika • Kuchlar • Ishqalanish • Nyutonning II qonuni
+          Mexanika • Kuchlar • Ishqalanish
         </motion.p>
       </div>
     </div>
@@ -67,24 +67,33 @@ export function TitleSlide() {
 const RECALL = [
   { q: 'Nyutonning II qonuni qanday yoziladi?', a: 'F = ma' },
   { q: 'Og‘irlik kuchi qanday aniqlanadi?', a: 'P = mg' },
-  { q: 'Ishqalanish kuchi qanday topiladi?', a: `${T.Fishq} = \\mu N` },
-  { q: 'Teng ta’sir etuvchi kuch nima?', a: '\\vec F = \\vec F_1 + \\vec F_2 + \\ldots', note: 'barcha kuchlarning vektor yig‘indisi' },
+  { q: 'Ishqalanish kuchi qanday aniqlanadi?', a: `${T.Fishq} = \\mu N` },
+  {
+    q: 'Teng ta’sir etuvchi kuch nima?',
+    a: '\\vec F_{\\text{net}} = \\sum \\vec F',
+    note: 'Jismga ta’sir qiluvchi barcha kuchlarning vektor yig‘indisi.',
+  },
 ]
 
+/** Qadamlar: savol → javob → keyingi savol → javob … */
 export function RecallSlide({ step }: SlideProps) {
-  const answers = step >= 4
   return (
     <SlideShell number={2} eyebrow="Takrorlash" title="O‘tilgan mavzuni eslaymiz">
       <div className="grid h-full grid-cols-2 grid-rows-2 gap-7">
         {RECALL.map((r, i) => (
-          <Reveal key={r.q} show={step >= i} variant="up" className="card flex flex-col justify-between p-10">
+          <Reveal
+            key={r.q}
+            show={step >= i * 2}
+            variant="up"
+            className={`card flex flex-col justify-between p-10 transition-shadow duration-500 ${step === i * 2 ? 'card-glow' : ''}`}
+          >
             <div className="flex items-start gap-6">
               <span className="font-mono text-[26px] text-lime">{String(i + 1).padStart(2, '0')}</span>
               <p className="font-display text-[42px] leading-[1.15] font-semibold">{r.q}</p>
             </div>
-            <Reveal show={answers} variant="zoom" delay={i * 0.12} className="pl-[62px]">
+            <Reveal show={step >= i * 2 + 1} variant="zoom" className="pl-[62px]">
               <Tex math={r.a} className="text-[60px] text-glow" />
-              {r.note && <div className="mt-1 text-[26px] text-fog">{r.note}</div>}
+              {r.note && <div className="mt-2 text-[28px] leading-snug text-snow/80">{r.note}</div>}
             </Reveal>
           </Reveal>
         ))}
@@ -97,14 +106,14 @@ export function RecallSlide({ step }: SlideProps) {
 export function ProblemSlide({ step }: SlideProps) {
   return (
     <SlideShell number={3} eyebrow="Savol" title="Muammoli vaziyat">
-      <div className="grid h-[470px] grid-cols-2 gap-8">
+      <div className="grid h-[430px] grid-cols-2 gap-8">
         {(['vertical', 'ramp'] as const).map((mode, i) => (
           <motion.div
             key={mode}
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 + i * 0.15, ease: EASE }}
-            className={`card relative overflow-hidden px-8 pt-6 pb-2 ${step >= 2 && mode === 'ramp' ? 'card-glow' : ''}`}
+            className={`card relative overflow-hidden px-8 pt-6 pb-2 ${step >= 1 && mode === 'ramp' ? 'card-glow' : ''}`}
           >
             <div className="flex items-center gap-4">
               <span className="grid size-12 place-items-center rounded-full bg-lime/15 font-display text-[26px] font-bold text-glow">
@@ -114,24 +123,25 @@ export function ProblemSlide({ step }: SlideProps) {
                 {i === 0 ? 'Yukni tik ko‘tarish' : 'Yukni qiya tekislik bo‘ylab ko‘tarish'}
               </span>
             </div>
-            <div className="h-[370px]">
-              <LiftScene mode={mode} showForce={step >= 2} />
+            <div className="h-[335px]">
+              <LiftScene mode={mode} showForce={step >= 1} />
             </div>
           </motion.div>
         ))}
       </div>
 
-      <Reveal show={step >= 1} variant="blur" className="mt-10 text-center">
-        <p className="font-display text-[54px] leading-[1.12] font-bold tracking-tight">
-          Nima uchun qiya tekislikdan foydalanilganda
+      <Reveal show variant="blur" delay={0.5} className="mt-7 text-center">
+        <p className="font-display text-[60px] leading-[1.08] font-bold tracking-tight">
+          Nima uchun qiya tekislik yukni
           <br />
-          yukni ko‘tarish <span className="text-glow">osonroq</span>?
+          ko‘tarishni <span className="text-glow">osonlashtiradi</span>?
         </p>
       </Reveal>
 
-      <Reveal show={step >= 2} variant="up" className="mt-6 flex justify-center">
-        <div className="rounded-full border border-lime/40 bg-lime/[0.08] px-10 py-4 text-[32px]">
-          Og‘irlik kuchining faqat bir qismini yengamiz — <span className="text-glow">kuch kamayadi</span>, yo‘l esa uzayadi
+      <Reveal show={step >= 1} variant="up" className="mt-6 flex justify-center">
+        <div className="max-w-[1500px] rounded-[28px] border border-lime/40 bg-lime/[0.08] px-10 py-4 text-center text-[29px] leading-snug">
+          Qiya tekislik kuchning yo‘nalishini va taqsimlanishini o‘zgartirib, yukni{' '}
+          <span className="text-glow">kichikroq kuch</span> bilan harakatlantirish imkonini beradi.
         </div>
       </Reveal>
     </SlideShell>
@@ -143,7 +153,6 @@ const EXAMPLES: { kind: ExampleKind; label: string }[] = [
   { kind: 'ramp', label: 'Pandus' },
   { kind: 'mountain', label: 'Tog‘ yo‘li' },
   { kind: 'loading', label: 'Yuk ortish rampasi' },
-  { kind: 'slide', label: 'Sirpanchiq' },
 ]
 
 export function DefinitionSlide({ step }: SlideProps) {
@@ -156,8 +165,8 @@ export function DefinitionSlide({ step }: SlideProps) {
         <div>
           <Reveal show variant="blur" delay={0.4}>
             <p className="font-display text-[46px] leading-[1.22] font-medium">
-              <span className="text-fog">Gorizontal tekislik bilan ma’lum </span>
-              <span className="font-bold text-glow">α burchak</span>
+              <span className="text-fog">Gorizontal tekislik bilan </span>
+              <span className="font-bold whitespace-nowrap text-glow">α burchak</span>
               <span className="text-fog"> hosil qiluvchi tekislik </span>
               <span className="font-bold text-snow">qiya tekislik</span>
               <span className="text-fog"> deyiladi.</span>
@@ -170,7 +179,7 @@ export function DefinitionSlide({ step }: SlideProps) {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-4 gap-6">
+      <div className="mt-6 grid grid-cols-3 gap-6">
         {EXAMPLES.map((e, i) => (
           <Reveal key={e.kind} show={step >= 2} variant="up" delay={i * 0.1} className="card flex items-center gap-6 px-7 py-5">
             <ExampleIcon kind={e.kind} />

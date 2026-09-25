@@ -90,7 +90,7 @@ export function InclineDiagram({
   mu = 0.45,
   blockAt = 0.36,
   className,
-  labelSize = 44,
+  labelSize = 50,
   cameraDuration = 1,
 }: InclineDiagramProps) {
   const uid = useId().replace(/:/g, '')
@@ -268,6 +268,8 @@ export function InclineDiagram({
                   label={labels[k]}
                   labelSize={labelSize}
                   side={k === 'mg' ? 'right' : k === 'Fy' ? 'left' : 'auto'}
+                  // Ishqalanish yorlig‘i qiyalik chizig‘ini kesib o‘tmasligi uchun sirtdan tashqariga suriladi
+                  nudge={k === 'Fishq' ? mul(n, 36) : undefined}
                 />
               )
             })}
@@ -395,10 +397,11 @@ interface ArrowProps {
   label: ReactNode
   labelSize: number
   side: 'auto' | 'left' | 'right'
+  nudge?: Vec
 }
 
 /** Jism markazidan o‘sib chiquvchi kuch vektori */
-function Arrow({ uid, to, color, state, dashed, label, labelSize, side }: ArrowProps) {
+function Arrow({ uid, to, color, state, dashed, label, labelSize, side, nudge }: ArrowProps) {
   const len = Math.hypot(to.x, to.y)
   if (len < 4) return null
   const ux = to.x / len
@@ -421,7 +424,8 @@ function Arrow({ uid, to, color, state, dashed, label, labelSize, side }: ArrowP
     lx = ux * ld - 8
   }
   const baseline = side === 'right' ? 'central' : uy > 0.35 ? 'hanging' : uy < -0.35 ? 'alphabetic' : 'central'
-  const labelY = side === 'right' ? to.y - 18 : ly
+  const labelY = (side === 'right' ? to.y - 18 : ly) + (nudge?.y ?? 0)
+  lx += nudge?.x ?? 0
 
   const grow = { duration: 0.65, ease: EASE }
 

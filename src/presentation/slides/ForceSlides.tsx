@@ -10,12 +10,14 @@ function DiagramLayout({
   vectors,
   showGuides,
   showBlockAngle,
+  labelSize,
   side,
 }: {
   camera: Camera
   vectors: Partial<Record<VecKind, VecState>>
   showGuides?: boolean
   showBlockAngle?: boolean
+  labelSize?: number
   side: ReactNode
 }) {
   return (
@@ -28,6 +30,7 @@ function DiagramLayout({
           showGuides={showGuides}
           showBlockAngle={showBlockAngle}
           showAngle={camera !== 'block'}
+          labelSize={labelSize}
           className="h-full w-full"
         />
       </div>
@@ -60,6 +63,7 @@ export function ForcesSlide({ step }: SlideProps) {
       <DiagramLayout
         camera="mid"
         vectors={v}
+        labelSize={58}
         side={
           <>
             <ForceRow show={step >= 1} color={C.mg} tex={T.mg} name="Og‘irlik kuchi" hint="vertikal pastga" />
@@ -83,7 +87,17 @@ export function DecompositionSlide({ step }: SlideProps) {
   const formulas = step >= 4
 
   return (
-    <SlideShell number={6} eyebrow="Asosiy g‘oya" title="Og‘irlik kuchini tashkil etuvchilarga ajratamiz">
+    <SlideShell
+      number={6}
+      eyebrow="Asosiy g‘oya"
+      title="Og‘irlik kuchini tashkil etuvchilarga ajratamiz"
+      keyIdea={
+        <>
+          <Tex math={T.Fx} /> jismni qiya tekislik bo‘ylab harakatlantiradi.
+        </>
+      }
+      showKeyIdea={formulas}
+    >
       <DiagramLayout
         camera={step >= 1 ? 'block' : 'wide'}
         vectors={v}
@@ -103,7 +117,7 @@ export function DecompositionSlide({ step }: SlideProps) {
               symbol={T.Fx}
               formula="= mg\sin\alpha"
               showFormula={formulas}
-              hint="qiyalik bo‘ylab pastga"
+              hint="qiya tekislik bo‘ylab tashkil etuvchi"
             />
             <ComponentCard
               show={step >= 3}
@@ -112,11 +126,8 @@ export function DecompositionSlide({ step }: SlideProps) {
               symbol={T.Fy}
               formula="= mg\cos\alpha"
               showFormula={formulas}
-              hint="qiyalikka tik, tekislik tomon"
+              hint="qiya tekislikka perpendikulyar tashkil etuvchi"
             />
-            <Reveal show={formulas} variant="fade" delay={0.4} className="pl-2 text-[26px] text-fog">
-<Tex math="mg" /> va <Tex math={T.Fy} /> orasidagi burchak ham <Tex math="\alpha" className="text-glow" />
-            </Reveal>
           </>
         }
       />
@@ -152,7 +163,7 @@ function ComponentCard({
           </Reveal>
         </div>
       </div>
-      <div className="mt-1 pl-8 text-[27px] text-fog">{hint}</div>
+      <div className="mt-1 text-[25px] whitespace-nowrap text-fog">{hint}</div>
     </Reveal>
   )
 }
@@ -160,28 +171,41 @@ function ComponentCard({
 /* 7 — Normal reaksiya kuchi */
 export function NormalSlide({ step }: SlideProps) {
   return (
-    <SlideShell number={7} eyebrow="Tik yo‘nalish" title="Normal reaksiya kuchi">
+    <SlideShell
+      number={7}
+      eyebrow="Tik yo‘nalish"
+      title="Normal reaksiya kuchi"
+      keyIdea={
+        <>
+          Qiya tekislikda <Tex math={`${T.N} = mg\\cos\\alpha`} />
+        </>
+      }
+      showKeyIdea={step >= 3}
+    >
       <DiagramLayout
         camera="block"
         vectors={{ mg: 'dim', Fy: 'hi', N: 'hi' }}
         side={
           <>
-            <Reveal show={step === 0} variant="fade" className="text-[32px] leading-snug text-fog">
-              Qiyalikka tik yo‘nalishda ikki kuch bor: <Tex math={T.Fy} /> va <Tex math={T.N} />
+            <Reveal show variant="blur" delay={0.35} className="rounded-[28px] border border-lime/30 bg-lime/[0.06] px-8 py-5">
+              <span className="eyebrow">Savol</span>
+              <p className="mt-1 font-display text-[36px] leading-tight font-semibold">
+                Nima uchun qiya tekislikda <Tex math={`${T.N} = mg`} /> emas?
+              </p>
             </Reveal>
-            <Reveal show={step >= 1} variant="up" className="card px-8 py-6">
+            <Reveal show={step >= 1} variant="up" className="card px-8 py-5">
               <Tex math={`${T.Fy} = mg\\cos\\alpha`} className="text-[58px]" />
             </Reveal>
-            <Reveal show={step >= 2} variant="up" className="card px-8 py-6">
+            <Reveal show={step >= 2} variant="up" className="card px-8 py-5">
               <p className="text-[27px] text-fog">Qiyalikka tik yo‘nalishda tezlanish yo‘q</p>
               <div className="mt-2 flex items-baseline gap-5">
                 <Tex math="\Rightarrow" className="text-[44px] text-fog" />
                 <Tex math={`${T.N} = ${T.Fy}`} className="text-[58px]" />
               </div>
             </Reveal>
-            <Emphasis show={step >= 3} className="card card-glow px-8 py-7">
+            <Emphasis show={step >= 3} className="card card-glow px-8 py-5">
               <div className="eyebrow">Demak</div>
-              <Tex math={`${T.N} = mg\\cos\\alpha`} className="mt-2 block text-[68px] text-glow" />
+              <Tex math={`${T.N} = mg\\cos\\alpha`} className="mt-1 block text-[66px] text-glow" />
             </Emphasis>
           </>
         }
@@ -209,8 +233,8 @@ export function FrictionSlide({ step }: SlideProps) {
             <Emphasis show={step >= 2} className="card card-glow px-8 py-7">
               <Tex math={`${T.Fishq} = \\mu mg\\cos\\alpha`} className="block text-[62px]" />
             </Emphasis>
-            <Reveal show={step >= 3} variant="blur" className="border-l-4 border-coral/70 pl-6 text-[30px] leading-snug text-snow/85">
-              Ishqalanish kuchi harakatga yoki harakatga intilishga qarshi yo‘naladi.
+            <Reveal show variant="fade" delay={0.6} className="border-l-4 border-coral/70 pl-6 text-[28px] leading-snug text-snow/70">
+              Ishqalanish kuchi harakatga qarshi yo‘naladi.
             </Reveal>
           </>
         }
