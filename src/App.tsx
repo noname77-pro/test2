@@ -31,7 +31,7 @@ export default function App() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
 
   const params: PhysicsParams = useMemo(
-    () => ({ angleDeg: lab.angleDeg, mass: lab.mass, muS: lab.muS, muK: lab.muK, g: PLANETS[lab.planet].g }),
+    () => ({ angleDeg: lab.angleDeg, mass: lab.mass, mu: lab.mu, g: PLANETS[lab.planet].g }),
     [lab],
   )
 
@@ -77,11 +77,11 @@ export default function App() {
   const predict = useCallback(
     (guess: boolean) => {
       const answer = forces.slides
-      setPrediction({ guess, answer, tanAlpha: forces.tanAlpha, muS: params.muS })
+      setPrediction({ guess, answer, tanAlpha: forces.tanAlpha, mu: params.mu })
       setScore((s) => ({ correct: s.correct + (guess === answer ? 1 : 0), total: s.total + 1 }))
       sim.start()
     },
-    [forces.slides, forces.tanAlpha, params.muS, sim],
+    [forces.slides, forces.tanAlpha, params.mu, sim],
   )
 
   const toggleRun = useCallback(() => {
@@ -167,7 +167,7 @@ export default function App() {
         {!projector && (
           <Hero
             angle={lab.angleDeg}
-            acceleration={forces.slides ? forces.kineticAcceleration : 0}
+            acceleration={forces.slides ? forces.slidingAcceleration : 0}
             g={params.g}
             planetName={PLANETS[lab.planet].name}
             hidden={hideHints}

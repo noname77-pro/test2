@@ -6,10 +6,10 @@ const FORMULAS = [
   { tex: 'F_{\\parallel} = mg\\sin\\alpha', caption: 'Parallel tashkil etuvchi', note: 'jismni qiyalik bo‘ylab tortadi' },
   { tex: 'F_{\\perp} = mg\\cos\\alpha', caption: 'Perpendikulyar tashkil etuvchi', note: 'jismni tayanchga bosadi' },
   { tex: 'N = mg\\cos\\alpha', caption: 'Normal reaksiya kuchi', note: 'sirtga tik, tashqariga' },
-  { tex: 'F_{\\text{ishq}} = \\mu N', caption: 'Ishqalanish kuchi', note: 'harakatga qarshi yo‘nalgan' },
-  { tex: 'a = g(\\sin\\alpha - \\mu\\cos\\alpha)', caption: 'Tezlanish', note: 'Nyutonning II qonunidan', highlight: true },
-  { tex: '\\tan\\alpha > \\mu_s', caption: 'Sirpanish sharti', note: 'mg sin α > μs mg cos α' },
-  { tex: 'v = at,\\quad s = \\dfrac{at^2}{2}', caption: 'Kinematika', note: 'tinch holatdan boshlanganda' },
+  { tex: 'F_{\\text{ishq}} = \\mu N = \\mu mg\\cos\\alpha', caption: 'Ishqalanish kuchi', note: 'harakatga qarshi yo‘nalgan' },
+  { tex: 'F_{\\text{net}} = mg\\sin\\alpha - \\mu mg\\cos\\alpha', caption: 'Teng ta’sir etuvchi kuch', note: 'pastga harakatda' },
+  { tex: 'a = g(\\sin\\alpha - \\mu\\cos\\alpha)', caption: 'Tezlanish', note: 'Nyutonning II qonunidan: a = F_net / m', highlight: true },
+  { tex: '\\tan\\alpha > \\mu', caption: 'Harakat sharti', note: 'mg sin α > μmg cos α' },
 ]
 
 export function FormulaPanel() {

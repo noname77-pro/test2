@@ -78,30 +78,12 @@ export function ControlPanel({ params, onChange, status, onStart, onPause, onRes
           onChange={(mass) => onChange({ mass })}
         />
         <Slider
-          id="mus"
-          title="Statik ishqalanish"
-          symbol={
-            <>
-              μ<sub>s</sub>
-            </>
-          }
-          value={params.muS}
+          id="mu"
+          title="Ishqalanish koeffitsienti"
+          symbol="μ"
+          value={params.mu}
           {...LIMITS.mu}
-          onChange={(muS) => onChange({ muS, muK: Math.min(params.muK, muS) })}
-        />
-        <Slider
-          id="muk"
-          title="Kinetik ishqalanish"
-          symbol={
-            <>
-              μ<sub>k</sub>
-            </>
-          }
-          value={params.muK}
-          {...LIMITS.mu}
-          limit={params.muS}
-          hint={params.muS < 1 ? 'μk ≤ μs' : undefined}
-          onChange={(muK) => onChange({ muK })}
+          onChange={(mu) => onChange({ mu })}
         />
 
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3.5 sm:col-span-full">

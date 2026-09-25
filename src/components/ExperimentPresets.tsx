@@ -8,7 +8,7 @@ interface ExperimentPresetsProps {
 }
 
 const same = (a: LabParams, b: LabParams) =>
-  a.angleDeg === b.angleDeg && a.mass === b.mass && a.muS === b.muS && a.muK === b.muK && a.planet === b.planet
+  a.angleDeg === b.angleDeg && a.mass === b.mass && a.mu === b.mu && a.planet === b.planet
 
 export function ExperimentPresets({ current, onSelect, compact = false }: ExperimentPresetsProps) {
   return (
@@ -47,7 +47,7 @@ export function ExperimentPresets({ current, onSelect, compact = false }: Experi
                 </span>
                 {!compact && (
                   <span className="mt-0.5 block truncate font-mono text-xs text-fog">
-                    α = {p.params.angleDeg}° · μs = {p.params.muS.toFixed(2)} · μk = {p.params.muK.toFixed(2)} · g ={' '}
+                    α = {p.params.angleDeg}° · μ = {p.params.mu.toFixed(2)} · g ={' '}
                     {PLANETS[p.params.planet].g}
                   </span>
                 )}

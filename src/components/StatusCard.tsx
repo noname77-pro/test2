@@ -25,7 +25,7 @@ interface View {
 
 function describe({ status, forces, v, t, a, hidden }: StatusCardProps): View {
   const par = `mg sin α = ${fmt(forces.parallel, 1)} N`
-  const lim = `μs N = ${fmt(forces.staticLimit, 1)} N`
+  const fr = `μmg cos α = ${fmt(forces.slidingFriction, 1)} N`
 
   if (hidden) {
     return {
@@ -50,8 +50,8 @@ function describe({ status, forces, v, t, a, hidden }: StatusCardProps): View {
       key: 'braking',
       tone: 'braking',
       title: 'JISM SEKINLASHMOQDA',
-      subtitle: 'Kinetik ishqalanish harakatga qarshi',
-      text: `Kinetik ishqalanish kuchi (Fk = ${fmt(forces.kinetic, 1)} N) ${par} dan katta — jism tormozlanib to‘xtaydi.`,
+      subtitle: 'Ishqalanish kuchi harakatga qarshi',
+      text: `Ishqalanish kuchi ${fr} ${par} dan katta — jism tormozlanib to‘xtaydi.`,
     }
   }
   if (v > 1e-6) {
@@ -59,25 +59,25 @@ function describe({ status, forces, v, t, a, hidden }: StatusCardProps): View {
       key: status === 'paused' ? 'paused' : 'moving',
       tone: 'moving',
       title: status === 'paused' ? 'PAUZA' : 'JISM HARAKATLANMOQDA',
-      subtitle: status === 'paused' ? 'Holat saqlandi — davom ettirish uchun Boshlash' : 'Jism pastga sirpanmoqda',
-      text: `Og‘irlik kuchining qiya tekislik bo‘ylab tashkil etuvchisi ishqalanish kuchidan katta: ${par} > Fk = ${fmt(forces.kinetic, 1)} N.`,
+      subtitle: status === 'paused' ? 'Holat saqlandi — davom ettirish uchun Boshlash' : 'Jism qiya tekislik bo‘ylab pastga harakatlanmoqda',
+      text: `Og‘irlik kuchining qiya tekislik bo‘ylab tashkil etuvchisi ishqalanish kuchidan katta: ${par} > ${fr}.`,
     }
   }
   if (forces.slides) {
     return {
       key: 'ready',
       tone: 'ready',
-      title: 'JISM SIRPANADI',
-      subtitle: status === 'running' ? 'Jism pastga sirpanmoqda' : 'Sirpanish sharti bajarildi — Boshlash tugmasini bosing',
-      text: `Og‘irlik kuchining qiya tekislik bo‘ylab tashkil etuvchisi statik ishqalanish kuchidan katta: ${par} > ${lim}.`,
+      title: 'JISM PASTGA HARAKATLANADI',
+      subtitle: status === 'running' ? 'Jism qiya tekislik bo‘ylab pastga harakatlanmoqda' : 'tan α > μ — «Boshlash» tugmasini bosing',
+      text: `Og‘irlik kuchining qiya tekislik bo‘ylab tashkil etuvchisi ishqalanish kuchidan katta: ${par} > ${fr}.`,
     }
   }
   return {
     key: 'static',
     tone: 'static',
     title: 'JISM TINCH HOLATDA',
-    subtitle: 'tan α ≤ μs — sirpanish sharti bajarilmadi',
-    text: `Statik ishqalanish kuchi jismning sirpanishiga to‘sqinlik qilmoqda: ${par} ≤ ${lim}. Ishqalanish kuchi aynan ${fmt(forces.parallel, 1)} N ga teng bo‘lib, uni muvozanatlaydi.`,
+    subtitle: 'tan α ≤ μ — harakat sharti bajarilmadi',
+    text: `Ishqalanish kuchi jismning sirpanishiga to‘sqinlik qilmoqda: ${par} ≤ ${fr}.`,
   }
 }
 
@@ -91,12 +91,12 @@ const toneStyles: Record<Tone, { dot: string; title: string; ring: string }> = {
 }
 
 export function StatusCard(props: StatusCardProps) {
-  const { forces, v, hidden, large } = props
+  const { forces, hidden, large } = props
   const view = describe(props)
   const tone = toneStyles[view.tone]
 
-  // Kuchlar "tortishuvi": harakatlantiruvchi kuch va unga qarshi ishqalanish chegarasi
-  const opposing = v > 1e-6 ? forces.kinetic : forces.staticLimit
+  // Kuchlar "tortishuvi": pastga tortuvchi kuch va unga qarshi ishqalanish μmg cos α
+  const opposing = forces.slidingFriction
   const scale = Math.max(forces.parallel, opposing, 1e-6)
 
   return (
@@ -135,8 +135,8 @@ export function StatusCard(props: StatusCardProps) {
         <div className="mt-5 space-y-2.5">
           <ForceBar label="mg sin α" hint="pastga tortadi" value={forces.parallel} scale={scale} color="bg-amber" />
           <ForceBar
-            label={v > 1e-6 ? 'Fk = μk N' : 'Fmax = μs N'}
-            hint="qarshilik chegarasi"
+            label="μmg cos α"
+            hint="ishqalanish kuchi"
             value={opposing}
             scale={scale}
             color="bg-coral"

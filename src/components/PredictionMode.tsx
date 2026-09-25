@@ -7,7 +7,7 @@ export interface Prediction {
   /** Taxmin paytidagi to‘g‘ri javob */
   answer: boolean
   tanAlpha: number
-  muS: number
+  mu: number
 }
 
 interface PredictionModeProps {
@@ -104,8 +104,8 @@ export function PredictionMode({ enabled, onToggle, prediction, canPredict, onPr
                 {correct ? 'To‘g‘ri!' : 'Qayta o‘ylab ko‘ring'}
               </p>
               <p className="mt-2 text-snow/80">
-                tan α = {fmt(prediction.tanAlpha, 3)} {prediction.answer ? '>' : '≤'} μs = {fmt(prediction.muS, 2)} — jism{' '}
-                {prediction.answer ? 'sirpanadi.' : 'tinch qoladi.'}
+                tan α = {fmt(prediction.tanAlpha, 3)} {prediction.answer ? '>' : '≤'} μ = {fmt(prediction.mu, 2)} — jism{' '}
+                {prediction.answer ? 'pastga harakatlanadi.' : 'tinch qoladi.'}
               </p>
               <button type="button" className="btn btn-ghost mt-4" onClick={onRetry}>
                 Yangi taxmin

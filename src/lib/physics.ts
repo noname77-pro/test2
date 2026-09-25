@@ -22,10 +22,8 @@ export interface PhysicsParams {
   angleDeg: number
   /** Massa, kg */
   mass: number
-  /** Statik ishqalanish koeffitsiyenti */
-  muS: number
-  /** Kinetik ishqalanish koeffitsiyenti */
-  muK: number
+  /** Ishqalanish koeffitsienti */
+  mu: number
   /** Erkin tushish tezlanishi, m/s² */
   g: number
 }
@@ -48,7 +46,7 @@ export const LIMITS = {
 /** Qiya tekislik uzunligi (jism bosib o‘tadigan yo‘l), m */
 export const PLANE_LENGTH = 10
 
-/** tan α va μs ni solishtirishdagi sonli xatolikdan himoya */
+/** tan α va μ ni solishtirishdagi sonli xatolikdan himoya */
 const EPS = 1e-9
 
 export const toRad = (deg: number) => (deg * Math.PI) / 180
@@ -73,67 +71,68 @@ export function calculateNormalForce(p: PhysicsParams): number {
   return calculatePerpendicularForce(p)
 }
 
-/** Fmax = μs N — tinch turgan jismga ta’sir qila oladigan eng katta statik ishqalanish */
-export function calculateStaticFrictionLimit(p: PhysicsParams): number {
-  return p.muS * calculateNormalForce(p)
+/** F_ishq = μN = μmg cos α */
+export function calculateSlidingFriction(p: PhysicsParams): number {
+  return p.mu * calculateNormalForce(p)
 }
 
-/** Fk = μk N — sirpanayotgan jismga ta’sir qiluvchi kinetik ishqalanish */
-export function calculateKineticFriction(p: PhysicsParams): number {
-  return p.muK * calculateNormalForce(p)
-}
-
-/** Kritik burchak: tan α_kr = μs */
-export function calculateCriticalAngle(muS: number): number {
-  return toDeg(Math.atan(muS))
+/** Kritik burchak: tan α_kr = μ */
+export function calculateCriticalAngle(mu: number): number {
+  return toDeg(Math.atan(mu))
 }
 
 /**
- * Tinch turgan jism sirpana boshlaydimi?
- * mg sin α > μs mg cos α  ⇔  tan α > μs
+ * Tinch turgan jism harakatga keladimi?
+ * mg sin α > μmg cos α  ⇔  tan α > μ
  */
 export function shouldSlide(p: PhysicsParams): boolean {
-  return calculateParallelForce(p) > calculateStaticFrictionLimit(p) + EPS
+  return calculateParallelForce(p) > calculateSlidingFriction(p) + EPS
 }
 
 /**
- * Sirpanish paytidagi tezlanish: a = g(sin α − μk cos α).
+ * Pastga harakatdagi tezlanish: a = g(sin α − μ cos α).
  * Manfiy qiymat jism tormozlanayotganini bildiradi (faqat v > 0 bo‘lganda ma’noli).
  */
-export function calculateKineticAcceleration(p: PhysicsParams): number {
+export function calculateSlidingAcceleration(p: PhysicsParams): number {
   const a = toRad(p.angleDeg)
-  return p.g * (Math.sin(a) - p.muK * Math.cos(a))
+  return p.g * (Math.sin(a) - p.mu * Math.cos(a))
 }
 
 /**
  * Jismning joriy tezlanishi.
- * - Tinch turgan jism: tan α ≤ μs bo‘lsa, statik ishqalanish uni ushlab turadi → a = 0.
- * - Harakatdagi jism: kinetik ishqalanish ishlaydi; manfiy a bilan u to‘xtaguncha sekinlashadi.
- * Tinch turgan jism hech qachon orqaga (yuqoriga) tezlanmaydi.
+ * - Tinch turgan jism: tan α ≤ μ bo‘lsa, ishqalanish uni ushlab turadi → a = 0.
+ * - Harakatdagi jism: a = g(sin α − μ cos α); manfiy a bilan u to‘xtaguncha sekinlashadi.
+ * Jism hech qachon orqaga (yuqoriga) harakatlanmaydi.
  */
 export function calculateAcceleration(p: PhysicsParams, v = 0): number {
-  if (v > EPS) return calculateKineticAcceleration(p)
+  if (v > EPS) return calculateSlidingAcceleration(p)
   if (!shouldSlide(p)) return 0
-  return Math.max(0, calculateKineticAcceleration(p))
+  return calculateSlidingAcceleration(p)
 }
 
 /**
- * Ishqalanish kuchining moduli (qiyalik bo‘ylab yuqoriga yo‘nalgan).
- * Tinch holatda statik ishqalanish mg sin α ni aniq muvozanatlaydi (Fmax dan oshmaydi).
+ * Jismga haqiqatda ta’sir qilayotgan ishqalanish kuchi (qiyalik bo‘ylab yuqoriga).
+ * Harakatda: F_ishq = μN. Tinch holatda ishqalanish mg sin α ni aniq muvozanatlaydi
+ * (u μN dan katta bo‘la olmaydi), aks holda jism yuqoriga tezlanib ketardi.
  */
 export function calculateFrictionForce(p: PhysicsParams, v = 0): number {
-  if (v > EPS || shouldSlide(p)) return calculateKineticFriction(p)
+  if (v > EPS || shouldSlide(p)) return calculateSlidingFriction(p)
   return calculateParallelForce(p)
+}
+
+/** F_net = mg sin α − F_ishq (tinch holatda 0) */
+export function calculateNetForce(p: PhysicsParams, v = 0): number {
+  return p.mass * calculateAcceleration(p, v)
 }
 
 export type MotionPhase = 'static' | 'sliding' | 'braking'
 
 export function getMotionPhase(p: PhysicsParams, v: number): MotionPhase {
-  if (v > EPS) return calculateKineticAcceleration(p) < 0 ? 'braking' : 'sliding'
+  if (v > EPS) return calculateSlidingAcceleration(p) < 0 ? 'braking' : 'sliding'
   return shouldSlide(p) ? 'sliding' : 'static'
 }
 
-/** Tinch holatdan boshlab butun qiyalikni o‘tish vaqti (sirpanmasa — null) */
+/** Tinch holatdan boshlab butun qiyalikni o‘tish vaqti (harakatlanmasa — null) */
 export function timeToBottom(p: PhysicsParams, length = PLANE_LENGTH): number | null {
   const a = calculateAcceleration(p, 0)
   if (a <= 0) return null
@@ -159,7 +158,7 @@ export function stepMotion(
   const { t, v, s } = state
   const a = calculateAcceleration(p, v)
 
-  // Kinetik ishqalanish jismni to‘xtatadi: v = 0 bo‘ladigan lahzadan keyin statik ishqalanish ishlaydi
+  // Ishqalanish jismni to‘xtatadi: v = 0 lahzasidan keyin jism tinch qoladi (tan α < μ)
   let tau = dt
   if (a < 0 && v + a * dt <= 0) tau = -v / a
 
@@ -186,11 +185,13 @@ export interface ForceSummary {
   parallel: number
   perpendicular: number
   normal: number
-  staticLimit: number
-  kinetic: number
+  /** μN */
+  slidingFriction: number
+  /** Jismga haqiqatda ta’sir qilayotgan ishqalanish */
   friction: number
+  netForce: number
   acceleration: number
-  kineticAcceleration: number
+  slidingAcceleration: number
   slides: boolean
   tanAlpha: number
   criticalAngle: number
@@ -202,13 +203,13 @@ export function summarizeForces(p: PhysicsParams, v = 0): ForceSummary {
     parallel: calculateParallelForce(p),
     perpendicular: calculatePerpendicularForce(p),
     normal: calculateNormalForce(p),
-    staticLimit: calculateStaticFrictionLimit(p),
-    kinetic: calculateKineticFriction(p),
+    slidingFriction: calculateSlidingFriction(p),
     friction: calculateFrictionForce(p, v),
+    netForce: calculateNetForce(p, v),
     acceleration: calculateAcceleration(p, v),
-    kineticAcceleration: calculateKineticAcceleration(p),
+    slidingAcceleration: calculateSlidingAcceleration(p),
     slides: shouldSlide(p),
     tanAlpha: Math.tan(toRad(p.angleDeg)),
-    criticalAngle: calculateCriticalAngle(p.muS),
+    criticalAngle: calculateCriticalAngle(p.mu),
   }
 }

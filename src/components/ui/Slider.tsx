@@ -11,8 +11,6 @@ interface SliderProps {
   step: number
   digits?: number
   unit?: string
-  /** Ruxsat etilgan yuqori chegara (masalan μk ≤ μs) */
-  limit?: number
   hint?: ReactNode
   compact?: boolean
   onChange: (value: number) => void
@@ -28,13 +26,11 @@ export function Slider({
   step,
   digits = 2,
   unit,
-  limit,
   hint,
   compact = false,
   onChange,
 }: SliderProps) {
   const pct = ((value - min) / (max - min)) * 100
-  const limitPct = limit !== undefined ? ((limit - min) / (max - min)) * 100 : 100
 
   return (
     <div className={`group ${compact ? '' : 'rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 pt-3.5 pb-2.5'} transition-colors hover:border-lime/25`}>
@@ -51,12 +47,6 @@ export function Slider({
       </div>
       <div className="relative mt-1">
         <div className="pointer-events-none absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-white/[0.08]">
-          {limit !== undefined && limitPct < 100 && (
-            <div
-              className="absolute inset-y-0 right-0 bg-[repeating-linear-gradient(135deg,rgba(255,141,107,0.35)_0_4px,transparent_4px_8px)]"
-              style={{ left: `${limitPct}%` }}
-            />
-          )}
           <div
             className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-olive via-lime to-glow shadow-[0_0_14px_rgba(188,211,87,0.7)]"
             style={{ width: `${pct}%` }}
@@ -70,10 +60,7 @@ export function Slider({
           max={max}
           step={step}
           value={value}
-          onChange={(e) => {
-            const next = Number(e.target.value)
-            onChange(limit !== undefined ? Math.min(next, limit) : next)
-          }}
+          onChange={(e) => onChange(Number(e.target.value))}
         />
       </div>
       <div className="flex justify-between font-mono text-[0.65rem] text-graphite">

@@ -3,7 +3,7 @@
 An interactive physics web app (UI in Uzbek, Latin script) about **the motion of a body on an inclined plane**. It is built for projector use in open physics lessons.
 
 - Inclined plane, block and force vectors are drawn in SVG, with arrow lengths scaled to the force magnitudes
-- Correct static/kinetic friction model (`tan α > μs`, `a = g(sin α − μk cos α)`)
+- School-level friction model with one coefficient μ (`F_ishq = μN`, `tan α > μ`, `a = g(sin α − μ cos α)`)
 - Live physical quantities, a v(t)/s(t) chart, a formula section
 - "Oldindan taxmin qil" prediction mode, 4 preset experiments, projector mode, fullscreen
 
@@ -77,7 +77,7 @@ vercel --prod   # production deployment
         ├── SimulationStage.tsx      # simulation card: HUD, speed, vector toggles
         ├── SimulationCanvas.tsx     # SVG scene: plane, block, angle, scale
         ├── ForceVector.tsx          # a single force arrow with its label
-        ├── ControlPanel.tsx         # α, m, μs, μk sliders, gravity, buttons
+        ├── ControlPanel.tsx         # α, m, μ sliders, gravity, buttons
         ├── PhysicsPanel.tsx         # "Fizik kattaliklar"
         ├── StatusCard.tsx           # large status indicator and force comparison
         ├── PredictionMode.tsx       # "Oldindan taxmin qil"
@@ -97,12 +97,12 @@ vercel --prod   # production deployment
 | Parallel component | `F∥ = mg sin α` |
 | Perpendicular component | `F⊥ = mg cos α` |
 | Normal reaction | `N = mg cos α` |
-| Maximum static friction | `Fmax = μs N` |
-| Kinetic friction | `Fk = μk N` |
-| Sliding condition | `mg sin α > μs mg cos α  ⇔  tan α > μs` |
-| Acceleration (sliding) | `a = g(sin α − μk cos α)` |
+| Friction force | `F_ishq = μN = μmg cos α` |
+| Net force (downward motion) | `F_net = mg sin α − μmg cos α` |
+| Condition for motion | `mg sin α > μmg cos α  ⇔  tan α > μ` |
+| Acceleration | `a = g(sin α − μ cos α)` |
 
-- At rest, static friction exactly balances `mg sin α` (it cannot exceed `Fmax`), so `a = 0`.
-- The UI keeps `μk ≤ μs`. That guarantees a positive acceleration when the body starts to slide.
+- If `mg sin α ≤ μmg cos α`, the body stays at rest ("Jism tinch holatda"), `a = 0` and `F_net = 0`. The friction arrow then balances `mg sin α` exactly, because friction can never exceed `μN` and cannot push the body up the slope.
+- If `mg sin α > μmg cos α`, the body moves down the slope ("Jism qiya tekislik bo‘ylab pastga harakatlanmoqda") with `a = g(sin α − μ cos α) > 0`.
 - If the angle is lowered during motion and `a < 0`, the body slows down, stops exactly at `v = 0`, and never moves backwards.
 - Motion is integrated with the exact constant-acceleration formulas at each step. The moment the body reaches the bottom (L = 10 m) is solved for exactly, so the final `t` matches `√(2L/a)`.

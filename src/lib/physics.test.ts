@@ -4,9 +4,9 @@ import {
   calculateAcceleration,
   calculateCriticalAngle,
   calculateFrictionForce,
-  calculateKineticFriction,
+  calculateNetForce,
   calculateNormalForce,
-  calculateStaticFrictionLimit,
+  calculateSlidingFriction,
   shouldSlide,
   stepMotion,
   timeToBottom,
@@ -14,7 +14,7 @@ import {
   type PhysicsParams,
 } from './physics'
 
-const base: PhysicsParams = { angleDeg: 30, mass: 5, muS: 0.25, muK: 0.2, g: 9.81 }
+const base: PhysicsParams = { angleDeg: 30, mass: 5, mu: 0.2, g: 9.81 }
 
 function simulate(p: PhysicsParams, dt = 1 / 120, maxT = 60) {
   let st: MotionState = { t: 0, v: 0, s: 0 }
@@ -28,31 +28,35 @@ function simulate(p: PhysicsParams, dt = 1 / 120, maxT = 60) {
 
 describe('kuchlar', () => {
   it('boshlang‘ich qiymatlar uchun to‘g‘ri hisoblaydi', () => {
-    expect(calculateNormalForce(base)).toBeCloseTo(5 * 9.81 * Math.cos(Math.PI / 6), 6)
-    expect(calculateStaticFrictionLimit(base)).toBeCloseTo(0.25 * 42.478, 2)
-    expect(calculateKineticFriction(base)).toBeCloseTo(0.2 * 42.478, 2)
-    expect(calculateAcceleration(base)).toBeCloseTo(9.81 * (0.5 - 0.2 * Math.cos(Math.PI / 6)), 6)
+    const cos30 = Math.cos(Math.PI / 6)
+    expect(calculateNormalForce(base)).toBeCloseTo(5 * 9.81 * cos30, 6)
+    // F_ishq = μN = μmg cos α
+    expect(calculateSlidingFriction(base)).toBeCloseTo(0.2 * 5 * 9.81 * cos30, 6)
+    // a = g(sin α − μ cos α)
+    expect(calculateAcceleration(base)).toBeCloseTo(9.81 * (0.5 - 0.2 * cos30), 6)
+    // F_net = mg sin α − μmg cos α
+    expect(calculateNetForce(base)).toBeCloseTo(5 * 9.81 * 0.5 - 0.2 * 5 * 9.81 * cos30, 6)
   })
 
-  it('tinch holatda statik ishqalanish mg sin α ga teng', () => {
+  it('tinch holatda ishqalanish mg sin α ni muvozanatlaydi, a = 0', () => {
     const p = { ...base, angleDeg: 10 }
     expect(shouldSlide(p)).toBe(false)
     expect(calculateFrictionForce(p)).toBeCloseTo(5 * 9.81 * Math.sin((10 * Math.PI) / 180), 6)
     expect(calculateAcceleration(p)).toBe(0)
+    expect(calculateNetForce(p)).toBe(0)
   })
 
-  it('sirpanish sharti tan α > μs', () => {
-    const crit = calculateCriticalAngle(0.5)
-    expect(crit).toBeCloseTo(26.565, 2)
-    expect(shouldSlide({ ...base, muS: 0.5, angleDeg: 26 })).toBe(false)
-    expect(shouldSlide({ ...base, muS: 0.5, angleDeg: 27 })).toBe(true)
-    expect(shouldSlide({ ...base, angleDeg: 0, muS: 0 })).toBe(false)
+  it('harakat sharti tan α > μ', () => {
+    expect(calculateCriticalAngle(0.5)).toBeCloseTo(26.565, 2)
+    expect(shouldSlide({ ...base, mu: 0.5, angleDeg: 26 })).toBe(false)
+    expect(shouldSlide({ ...base, mu: 0.5, angleDeg: 27 })).toBe(true)
+    expect(shouldSlide({ ...base, angleDeg: 0, mu: 0 })).toBe(false)
   })
 })
 
 describe('harakat', () => {
   it('ishqalanishsiz: t = √(2L / g sin α)', () => {
-    const p = { ...base, muS: 0, muK: 0 }
+    const p = { ...base, mu: 0 }
     const end = simulate(p)
     const expected = Math.sqrt((2 * PLANE_LENGTH) / (9.81 * 0.5))
     expect(end.s).toBe(PLANE_LENGTH)

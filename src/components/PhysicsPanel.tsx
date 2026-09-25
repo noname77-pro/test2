@@ -18,21 +18,34 @@ interface Row {
   value: number
   unit: string
   accent?: string
+  /** Taxmin rejimida javobni oshkor qilmaslik uchun qiymat yashiriladi */
+  secret?: boolean
 }
 
 export function PhysicsPanel({ params, forces, snapshot, moving, hideVerdict = false, compact = false }: PhysicsPanelProps) {
+  // Tinch holatda F_net = 0; harakatda (yoki tan α > μ bo‘lganda) a = g(sin α − μ cos α)
+  const sliding = moving || forces.slides
+  const acceleration = moving ? snapshot.a : forces.slides ? forces.acceleration : 0
+  const netForce = params.mass * acceleration
+
   const rows: Row[] = [
     { tex: 'P = mg', value: forces.weight, unit: 'N', accent: 'bg-snow' },
     { tex: 'F_{\\parallel} = mg\\sin\\alpha', value: forces.parallel, unit: 'N', accent: 'bg-amber' },
     { tex: 'F_{\\perp} = mg\\cos\\alpha', value: forces.perpendicular, unit: 'N', accent: 'bg-periwinkle' },
     { tex: 'N = mg\\cos\\alpha', value: forces.normal, unit: 'N', accent: 'bg-lime' },
-    { tex: 'F_{\\max} = \\mu_s N', value: forces.staticLimit, unit: 'N', accent: 'bg-coral/60' },
-    { tex: 'F_k = \\mu_k N', value: forces.kinetic, unit: 'N', accent: 'bg-coral' },
+    { tex: 'F_{\\text{ishq}} = \\mu N', value: forces.slidingFriction, unit: 'N', accent: 'bg-coral' },
+    {
+      tex: hideVerdict
+        ? 'F_{\\text{net}}'
+        : sliding
+          ? 'F_{\\text{net}} = mg\\sin\\alpha - \\mu mg\\cos\\alpha'
+          : 'F_{\\text{net}} = 0',
+      value: netForce,
+      unit: 'N',
+      accent: 'bg-glow',
+      secret: hideVerdict,
+    },
   ]
-
-  // Tinch holatda a = 0; sirpanishda (yoki sirpanish sharti bajarilganda) a = g(sin α − μk cos α)
-  const sliding = moving || forces.slides
-  const acceleration = moving ? snapshot.a : forces.slides ? forces.acceleration : 0
 
   return (
     <section className="card p-5" aria-labelledby="physics-title">
@@ -66,13 +79,17 @@ export function PhysicsPanel({ params, forces, snapshot, moving, hideVerdict = f
 
       <dl className="divide-y divide-white/[0.06]">
         {rows.map((r) => (
-          <div key={r.tex} className="flex items-center justify-between gap-3 py-2.5">
+          <div key={r.accent} className="flex items-center justify-between gap-3 py-2.5">
             <dt className="flex min-w-0 items-center gap-2.5 text-snow/90">
               <span className={`h-4 w-1 shrink-0 rounded-full ${r.accent}`} />
               <Tex math={r.tex} />
             </dt>
             <dd className="shrink-0 font-mono text-base">
-              <AnimatedNumber value={r.value} className="tabular font-semibold text-snow" />
+              {r.secret ? (
+                <span className="font-semibold text-fog">?</span>
+              ) : (
+                <AnimatedNumber value={r.value} className="tabular font-semibold text-snow" />
+              )}
               <span className="ml-1 text-sm text-fog">{r.unit}</span>
             </dd>
           </div>
@@ -83,12 +100,12 @@ export function PhysicsPanel({ params, forces, snapshot, moving, hideVerdict = f
         <div className="flex items-center justify-between gap-2">
           <span className="eyebrow">Tezlanish</span>
           {!hideVerdict && (
-            <span className="font-mono text-xs text-fog">{sliding ? 'kinetik ishqalanish' : 'tinch holat'}</span>
+            <span className="font-mono text-xs text-fog">{sliding ? 'pastga harakat' : 'tinch holat'}</span>
           )}
         </div>
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <span className="text-snow/90">
-            {hideVerdict ? <Tex math="a = \,?" /> : sliding ? <Tex math="a = g(\sin\alpha - \mu_k\cos\alpha)" /> : <Tex math="a = 0" />}
+            {hideVerdict ? <Tex math="a = \,?" /> : sliding ? <Tex math="a = g(\sin\alpha - \mu\cos\alpha)" /> : <Tex math="a = 0" />}
           </span>
           <span className="font-mono">
             {hideVerdict ? (
