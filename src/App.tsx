@@ -12,11 +12,12 @@ import { ProjectorBadge, ProjectorToggle, useProjectorMode } from './components/
 import type { VectorVisibility } from './components/SimulationCanvas'
 import { SimulationStage } from './components/SimulationStage'
 import { StatusCard } from './components/StatusCard'
-import { CollapseIcon, ExpandIcon, HomeIcon } from './components/ui/Icons'
+import { CollapseIcon, ExpandIcon, HomeIcon, SlidesIcon } from './components/ui/Icons'
 import { useFullscreen } from './hooks/useFullscreen'
 import { useSimulation } from './hooks/useSimulation'
 import { PLANETS, summarizeForces, type PhysicsParams } from './lib/physics'
 import { DEFAULT_PARAMS, type ExperimentPreset, type LabParams } from './lib/presets'
+import { PRESENTATION_PATH } from './presentation/config'
 
 const ALL_VECTORS: VectorVisibility = { weight: true, normal: true, friction: true, components: true }
 
@@ -148,6 +149,14 @@ export default function App() {
       <TopBar
         actions={
           <>
+            <a
+              href={PRESENTATION_PATH}
+              className="btn btn-ghost border-lime/40 text-glow hover:bg-lime/10"
+              title="Ochiq dars prezentatsiyasi"
+            >
+              <SlidesIcon width={17} height={17} />
+              <span className="hidden md:inline">Ochiq dars prezentatsiyasi</span>
+            </a>
             <ProjectorToggle enabled={projector} onToggle={() => setProjector((p) => !p)} />
             {fullscreen.supported && (
               <button type="button" className="btn btn-ghost" onClick={fullscreen.toggle} aria-pressed={fullscreen.isFullscreen} title="To‘liq ekran (F)">

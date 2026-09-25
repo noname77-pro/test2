@@ -7,6 +7,15 @@ An interactive physics web app (UI in Uzbek, Latin script) about **the motion of
 - Live physical quantities, a v(t)/s(t) chart, a formula section
 - "Oldindan taxmin qil" prediction mode, 4 preset experiments, projector mode, fullscreen
 
+## Two parts, one app
+
+| Route | What it is |
+| --- | --- |
+| `/` | Interactive inclined-plane simulator |
+| `/presentation` | Open-lesson slide presentation (15 slides) |
+
+The simulator has an **"Ochiq dars prezentatsiyasi"** button that opens the presentation. The presentation has a **"Simulyatorga qaytish"** button that returns to the simulator. The presentation is lazy-loaded as a separate chunk, so the simulator doesn't load its code.
+
 ## Running locally
 
 Requires Node.js 20+.
@@ -32,6 +41,25 @@ npm test           # physics unit tests (vitest)
 | `R` | Restart |
 | `P` | Projector mode |
 | `F` | Fullscreen |
+
+## Presentation
+
+Controls (keyboard, projector clicker or mouse):
+
+| Key | Action |
+| --- | --- |
+| `Space`, `PageDown`, `↓`, click on the slide | Next step / animation (moves to the next slide once all steps are shown) |
+| `PageUp`, `↑`, `Backspace` | Previous step |
+| `→` | Next slide |
+| `←` | Previous slide (opens fully revealed) |
+| `Home` / `End` | First / last slide |
+| `F` | Fullscreen |
+| `Esc` | Exit fullscreen |
+
+- Slides are laid out on a fixed 1920×1080 canvas and scaled to the screen, so they look the same at 1920×1080 and 1366×768.
+- The current slide number is kept in the URL hash (`/presentation#6`), so a reload keeps your place.
+- Animations use Framer Motion. Camera zooms animate the SVG `viewBox`; formulas are rendered with KaTeX.
+- **Simulator URL:** the `SIMULATOR_URL` constant in `src/presentation/config.ts` controls where "Simulyatorni ochish" (slide 12, opens in a new tab) and "Simulyatorga qaytish" go. The default is `/`, the simulator in this same project.
 
 ## Deploying to Vercel
 
@@ -60,7 +88,7 @@ vercel --prod   # production deployment
 ├── vercel.json
 ├── vite.config.ts
 └── src/
-    ├── main.tsx                     # entry point, fonts and KaTeX styles
+    ├── main.tsx                     # entry point: / → simulator, /presentation → slides
     ├── index.css                    # Tailwind v4 theme, cards, sliders, layout grid
     ├── App.tsx                      # state, layout, keyboard shortcuts
     ├── lib/
@@ -72,8 +100,15 @@ vercel --prod   # production deployment
     │   ├── useSimulation.ts         # requestAnimationFrame loop, start/pause/reset
     │   ├── useFullscreen.ts
     │   └── useElementWidth.ts
+    ├── presentation/                # /presentation — open-lesson slides
+    │   ├── config.ts                # SIMULATOR_URL, PRESENTATION_PATH
+    │   ├── Presentation.tsx         # deck: navigation, keyboard, progress, fullscreen
+    │   ├── InclineDiagram.tsx       # SVG diagram with camera zoom and force vectors
+    │   ├── illustrations.tsx        # lifting scenes, example icons, mini inclines
+    │   ├── ui.tsx                   # Stage (1920×1080 scaling), Reveal, Emphasis, SlideShell
+    │   └── slides/                  # 15 slides (Intro, Force, Motion, Practice)
     └── components/
-        ├── Header.tsx               # top bar + hero
+        ├── Header.tsx               # top bar + hero (+ "Ochiq dars prezentatsiyasi" button)
         ├── SimulationStage.tsx      # simulation card: HUD, speed, vector toggles
         ├── SimulationCanvas.tsx     # SVG scene: plane, block, angle, scale
         ├── ForceVector.tsx          # a single force arrow with its label

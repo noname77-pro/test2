@@ -17,7 +17,7 @@ export function TopBar({ actions }: TopBarProps) {
             <span className="block font-mono text-[0.65rem] tracking-[0.2em] text-fog uppercase">Fizika laboratoriyasi</span>
           </span>
         </a>
-        <nav className="hidden items-center gap-7 text-sm text-fog xl:flex" aria-label="Bo‘limlar">
+        <nav className="hidden items-center gap-7 text-sm text-fog 2xl:flex" aria-label="Bo‘limlar">
           <a href="#simulyatsiya" className="transition-colors hover:text-glow">Simulyatsiya</a>
           <a href="#grafik" className="transition-colors hover:text-glow">Grafik</a>
           <a href="#formulalar" className="transition-colors hover:text-glow">Formulalar</a>
