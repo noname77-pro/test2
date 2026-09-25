@@ -69,9 +69,8 @@ const RECALL = [
   { q: 'Og‘irlik kuchi qanday aniqlanadi?', a: 'P = mg' },
   { q: 'Ishqalanish kuchi qanday aniqlanadi?', a: `${T.Fishq} = \\mu N` },
   {
-    q: 'Teng ta’sir etuvchi kuch nima?',
-    a: '\\vec F_{\\text{net}} = \\sum \\vec F',
-    note: 'Jismga ta’sir qiluvchi barcha kuchlarning vektor yig‘indisi.',
+    q: 'Jismga bir nechta kuch ta’sir qilsa, uning harakati nimaga bog‘liq bo‘ladi?',
+    note: 'Jismga ta’sir qilayotgan kuchlarning yo‘nalishi va ularning natijaviy ta’siriga bog‘liq bo‘ladi.',
   },
 ]
 
@@ -92,7 +91,7 @@ export function RecallSlide({ step }: SlideProps) {
               <p className="font-display text-[42px] leading-[1.15] font-semibold">{r.q}</p>
             </div>
             <Reveal show={step >= i * 2 + 1} variant="zoom" className="pl-[62px]">
-              <Tex math={r.a} className="text-[60px] text-glow" />
+              {r.a && <Tex math={r.a} className="text-[60px] text-glow" />}
               {r.note && <div className="mt-2 text-[28px] leading-snug text-snow/80">{r.note}</div>}
             </Reveal>
           </Reveal>
