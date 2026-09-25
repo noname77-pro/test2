@@ -1,0 +1,355 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #010101;
+  --color-ink-2: #0a0b08;
+  --color-ink-3: #121410;
+  --color-graphite: #565656;
+  --color-fog: #9d9d9d;
+  --color-snow: #fbfafb;
+  --color-moss: #505b24;
+  --color-olive: #74872c;
+  --color-lime: #bcd357;
+  --color-glow: #e9fd87;
+  --color-coral: #ff8d6b;
+  --color-amber: #ffd166;
+  --color-periwinkle: #9db0ff;
+
+  --font-display: 'Space Grotesk Variable', 'Inter Variable', system-ui, sans-serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+  --radius-4xl: 2rem;
+
+  --animate-sweep: sweep 6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+
+  @keyframes sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+    60%,
+    100% {
+      transform: translateX(260%);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    transition: font-size 0.3s ease;
+  }
+
+  /* Proyektor rejimi: barcha rem o‘lchamlar proporsional kattalashadi */
+  html.projector {
+    font-size: 17px;
+  }
+
+  @media (min-width: 1800px) {
+    html.projector {
+      font-size: 19px;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-ink);
+    color: var(--color-snow);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-glow);
+    outline-offset: 2px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  /* Qorong‘i shisha karta */
+  .card {
+    position: relative;
+    border-radius: 1.75rem;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(255 255 255 / 0.01)),
+      rgb(10 11 8 / 0.78);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 30px 60px -40px rgb(0 0 0 / 0.9);
+    backdrop-filter: blur(14px);
+  }
+
+  .card-glow {
+    border-color: rgb(188 211 87 / 0.28);
+    box-shadow:
+      inset 0 1px 0 rgb(233 253 135 / 0.08),
+      0 0 0 1px rgb(188 211 87 / 0.05),
+      0 0 60px -20px rgb(188 211 87 / 0.35),
+      0 30px 60px -40px rgb(0 0 0 / 0.9);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-fog);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tugmalar */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.7rem 1.15rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .btn-primary {
+    background: var(--color-glow);
+    color: var(--color-ink);
+    box-shadow:
+      0 0 0 1px rgb(233 253 135 / 0.6),
+      0 10px 30px -10px rgb(188 211 87 / 0.7);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #f3ffb4;
+    box-shadow:
+      0 0 0 1px rgb(233 253 135 / 0.9),
+      0 12px 40px -8px rgb(188 211 87 / 0.9);
+  }
+
+  .btn-ghost {
+    background: rgb(255 255 255 / 0.04);
+    color: var(--color-snow);
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(188 211 87 / 0.45);
+  }
+
+  .btn-ghost[aria-pressed='true'] {
+    border-color: rgb(188 211 87 / 0.7);
+    background: rgb(188 211 87 / 0.12);
+    color: var(--color-glow);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+  }
+
+  /* Slayder */
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2.25rem;
+    background: transparent;
+    cursor: pointer;
+    touch-action: pan-y;
+  }
+
+  .range:focus-visible {
+    outline: none;
+  }
+
+  .range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  .range::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-top: -8px;
+    border-radius: 999px;
+    background: var(--color-glow);
+    border: 4px solid var(--color-ink);
+    box-shadow:
+      0 0 0 1px rgb(233 253 135 / 0.9),
+      0 0 18px rgb(188 211 87 / 0.8);
+    transition: transform 0.15s ease;
+  }
+
+  .range::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--color-glow);
+    border: 4px solid var(--color-ink);
+    box-shadow:
+      0 0 0 1px rgb(233 253 135 / 0.9),
+      0 0 18px rgb(188 211 87 / 0.8);
+  }
+
+  .range:active::-webkit-slider-thumb,
+  .range:focus-visible::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+
+  /* KaTeX ranglarini mavzuga moslash */
+  .katex {
+    font-size: 1.08em;
+    color: inherit;
+  }
+}
+
+/* Fon: nozik to‘r va shovqin */
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  animation: noise-shift 1.2s steps(4) infinite;
+}
+
+@keyframes noise-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3%, 2%);
+  }
+  50% {
+    transform: translate(2%, -3%);
+  }
+  75% {
+    transform: translate(-2%, -1%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Laboratoriya maketi: ekran kengligiga qarab joylashuv o‘zgaradi */
+.lab-grid {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'sim' 'status' 'predict' 'controls' 'physics' 'presets';
+}
+
+@media (min-width: 768px) {
+  .lab-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'sim sim'
+      'status predict'
+      'controls physics'
+      'presets physics';
+  }
+}
+
+@media (min-width: 1280px) {
+  .lab-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 380px;
+    grid-template-areas:
+      'sim sim controls'
+      'status predict physics'
+      'presets presets physics';
+  }
+}
+
+@media (min-width: 1536px) {
+  .lab-grid {
+    grid-template-columns: 340px minmax(0, 1fr) minmax(0, 1fr) 370px;
+    grid-template-areas:
+      'controls sim sim physics'
+      'presets status predict physics';
+  }
+}
+
+@media (min-width: 1024px) {
+  html.projector .lab-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 400px;
+    grid-template-areas:
+      'sim sim status'
+      'sim sim predict'
+      'controls controls physics'
+      'presets presets physics';
+  }
+}
+
+@media (min-width: 1800px) {
+  html.projector .lab-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 440px;
+  }
+}
