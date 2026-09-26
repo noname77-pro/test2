@@ -1,11 +1,13 @@
 import { useMotionValueEvent, useSpring } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ControlPanel } from './components/ControlPanel'
 import { ExperimentPresets } from './components/ExperimentPresets'
 import { ExplanationSection } from './components/ExplanationSection'
 import { FormulaPanel } from './components/FormulaPanel'
 import { GraphPanel } from './components/GraphPanel'
 import { Hero, TopBar } from './components/Header'
+import { LessonFlow } from './components/lesson/LessonFlow'
+import type { LessonLab, RunResult } from './components/lesson/types'
 import { PhysicsPanel } from './components/PhysicsPanel'
 import { PredictionMode, type Prediction } from './components/PredictionMode'
 import { ProjectorBadge, ProjectorToggle, useProjectorMode } from './components/ProjectorMode'
@@ -53,11 +55,22 @@ export default function App() {
 
   const hideHints = predictEnabled && prediction === null && status === 'idle'
 
-  const updateLab = useCallback((patch: Partial<LabParams>) => setLab((l) => ({ ...l, ...patch })), [])
+  // Dars mashg‘ulotlari uchun: qaysi tajriba kuzatilmoqda va o‘lchangan natijalar
+  const [lessonRun, setLessonRun] = useState<string | null>(null)
+  const [lessonResults, setLessonResults] = useState<Record<string, RunResult>>({})
+  const lessonStartTimer = useRef<number | undefined>(undefined)
+
+  const updateLab = useCallback((patch: Partial<LabParams>) => {
+    setLab((l) => ({ ...l, ...patch }))
+    // Parametr qo‘lda o‘zgartirilsa, dars tajribasi natijasi yozilmaydi
+    setLessonRun(null)
+  }, [])
 
   const resetMotion = useCallback(() => {
     sim.reset()
     setPrediction(null)
+    window.clearTimeout(lessonStartTimer.current)
+    setLessonRun(null)
   }, [sim])
 
   const resetAll = useCallback(() => {
@@ -83,6 +96,36 @@ export default function App() {
       sim.start()
     },
     [forces.slides, forces.tanAlpha, params.mu, sim],
+  )
+
+  /** Dars mashg‘uloti mavjud simulyatorni sozlaydi va tajribani boshlaydi */
+  const runLessonExperiment = useCallback(
+    (id: string, patch: Partial<LabParams>) => {
+      resetMotion()
+      setLab({ ...DEFAULT_PARAMS, ...patch })
+      setLessonRun(id)
+      document.getElementById('simulyatsiya')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // Qiyalik yangi burchakka silliq burilib olgach boshlanadi
+      lessonStartTimer.current = window.setTimeout(() => sim.start(), 700)
+    },
+    [resetMotion, sim],
+  )
+
+  // Natija mavjud simulyatsiyadan olinadi: pastga yetish vaqti yoki jism qo‘zg‘almagani
+  useEffect(() => {
+    if (!lessonRun) return
+    if (status === 'finished') {
+      setLessonResults((r) => ({ ...r, [lessonRun]: snapshot.t }))
+      setLessonRun(null)
+    } else if (status === 'running' && !forces.slides && snapshot.v === 0 && snapshot.t > 1.5) {
+      setLessonResults((r) => ({ ...r, [lessonRun]: 'static' }))
+      setLessonRun(null)
+    }
+  }, [lessonRun, status, snapshot.t, snapshot.v, forces.slides])
+
+  const lessonLab: LessonLab = useMemo(
+    () => ({ run: runLessonExperiment, results: lessonResults, activeRun: lessonRun }),
+    [runLessonExperiment, lessonResults, lessonRun],
   )
 
   const toggleRun = useCallback(() => {
@@ -182,6 +225,10 @@ export default function App() {
             hidden={hideHints}
           />
         )}
+
+        <div className={`mb-4 ${projector ? 'pt-6' : ''}`}>
+          <LessonFlow lab={lessonLab} projector={projector} />
+        </div>
 
         <div className={`lab-grid ${projector ? 'pt-6' : ''}`}>
           <div className="[grid-area:sim] min-w-0">

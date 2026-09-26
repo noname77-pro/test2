@@ -16,6 +16,18 @@ An interactive physics web app (UI in Uzbek, Latin script) about **the motion of
 
 The simulator has an **"Ochiq dars prezentatsiyasi"** button that opens the presentation. The presentation has a **"Simulyatorga qaytish"** button that returns to the simulator. The presentation is lazy-loaded as a separate chunk, so the simulator doesn't load its code.
 
+## Lesson activities (simulator page)
+
+A collapsible **"Dars bosqichlari"** card above the lab guides a school lesson in five steps: Muammo, Taxmin, Tajriba, Xulosa, Test.
+
+- **Muammo:** a problem question; the answer is revealed only in the Xulosa step.
+- **Taxmin:** Predict–Observe–Explain, Think–Pair–Share, and the "Kim tez topadi?" mini race.
+- **Tajriba:** three group tasks (angle, mass, friction).
+- **Xulosa:** return to the problem question, plus real-life examples.
+- **Test:** true/false questions, a 5-question final test, and an exit ticket.
+
+The "run" buttons set the existing simulator's parameters, start it, and record the measured time to reach the bottom. The race uses `timeToBottom()` from `lib/physics.ts`. No physics code was changed, and all answers stay in the browser's memory (nothing is sent or stored). The components are in `src/components/lesson/`.
+
 ## Running locally
 
 Requires Node.js 20+.
