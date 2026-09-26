@@ -10,7 +10,7 @@ export function TopBar({ actions }: TopBarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-white/[0.05] bg-ink/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1760px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
-        <a href="#top" className="flex items-center gap-3">
+        <a href="#top" className="flex shrink-0 items-center gap-3">
           <Logo />
           <span className="hidden leading-tight md:block">
             <span className="block font-display text-[0.95rem] font-semibold tracking-tight">Qiya tekislik</span>
@@ -23,7 +23,7 @@ export function TopBar({ actions }: TopBarProps) {
           <a href="#formulalar" className="transition-colors hover:text-glow">Formulalar</a>
           <a href="#tushuntirish" className="transition-colors hover:text-glow">Tushuntirish</a>
         </nav>
-        <div className="flex items-center gap-2">{actions}</div>
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">{actions}</div>
       </div>
     </header>
   )
